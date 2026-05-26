@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: paperclip-postgres
+    environment:
+      POSTGRES_DB: paperclip
+      POSTGRES_USER: paperclip
+      POSTGRES_PASSWORD: paperclip_dev
+    ports:
+      - "5434:5432"
+    volumes:
+      - paperclip_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U paperclip -d paperclip"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  paperclip_pgdata:
