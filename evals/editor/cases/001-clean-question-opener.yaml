@@ -1,0 +1,10 @@
+draft:
+  id: '00000000-0000-0000-0000-000000000001'
+  platform: x
+  status: editor_review
+  hook_tag: question-opener
+  reworkCount: 0
+  body: |
+    what's the cheapest way to grow a newsletter to 10k subscribers? after running an AI marketing agency on it for 6 weeks, the answer surprised me. https://news.example.com
+
+expected_verdict: approve

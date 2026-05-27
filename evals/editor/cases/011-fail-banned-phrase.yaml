@@ -1,0 +1,10 @@
+draft:
+  id: '00000000-0000-0000-0000-000000000011'
+  platform: x
+  status: editor_review
+  hook_tag: bold-claim
+  reworkCount: 0
+  body: |
+    this is a total game changer for newsletter growth. https://news.example.com
+
+expected_verdict: rework

@@ -17,7 +17,9 @@
     "drizzle-orm": "0.36.0",
     "zod": "3.23.8",
     "clsx": "2.1.1",
-    "lucide-react": "0.453.0"
+    "lucide-react": "0.453.0",
+    "recharts": "2.13.0",
+    "react-markdown": "9.0.1"
   },
   "devDependencies": {
     "@playwright/test": "1.48.2",

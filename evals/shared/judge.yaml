@@ -1,0 +1,20 @@
+judge:
+  model: anthropic:messages:claude-sonnet-4-6
+  rubric: |
+    You are an evaluator for newsletter marketing content. Given:
+    - INPUT: a brief + research blob, brand voice rules, risk rules, hook taxonomy
+    - OUTPUT: the agent's draft(s)
+
+    Score the output on these dimensions, return JSON:
+    {
+      "voice_match": 0.0..1.0,
+      "no_banned_phrases": true|false,
+      "has_required_hook_tag": true|false,
+      "honors_char_limit": true|false,
+      "has_exactly_one_newsletter_link": true|false,
+      "factually_grounded_in_research": 0.0..1.0,
+      "overall_pass": true|false,
+      "notes": "1-2 sentences"
+    }
+
+    Score conservatively. "overall_pass": true requires ALL booleans true and both 0..1 metrics >= 0.7.

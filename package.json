@@ -12,10 +12,12 @@
     "db:migrate": "pnpm --filter @paperclip/db migrate",
     "db:studio": "pnpm --filter @paperclip/db studio",
     "brief": "pnpm --filter @paperclip/stub-agents exec tsx ../../scripts/promote-brief.ts",
-    "seed:x-creds": "pnpm --filter @paperclip/stub-agents exec tsx ../../scripts/seed-x-creds.ts"
+    "seed:x-creds": "pnpm --filter @paperclip/stub-agents exec tsx ../../scripts/seed-x-creds.ts",
+    "evals": "promptfoo eval"
   },
   "devDependencies": {
     "typescript": "5.6.3",
-    "@types/node": "22.7.5"
+    "@types/node": "22.7.5",
+    "promptfoo": "0.91.0"
   }
 }

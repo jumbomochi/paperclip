@@ -1,0 +1,28 @@
+description: Editor golden set
+prompts:
+  - file://../../agents/editor.yaml
+providers:
+  - id: anthropic:messages:claude-opus-4-7
+tests:
+  - vars:
+      draft: file://cases/{{case}}.yaml#draft
+      expected_verdict: file://cases/{{case}}.yaml#expected_verdict
+    assert:
+      - type: javascript
+        value: |
+          const out = JSON.parse(output);
+          const expected = context.vars.expected_verdict;
+          if (out.verdict !== expected) {
+            return { pass: false, reason: `verdict mismatch: got ${out.verdict}, expected ${expected}` };
+          }
+          if (typeof out.notes !== 'string' || out.notes.length === 0) {
+            return { pass: false, reason: 'missing notes' };
+          }
+          return { pass: true };
+
+scenarios:
+  - description: per-case
+    cases:
+      - case: '001-clean-question-opener'
+      - case: '011-fail-banned-phrase'
+      # TODO: 002-010 should-approve + 012-020 should-reject

@@ -1,0 +1,24 @@
+brief:
+  audience: "indie devs and founders running newsletters"
+  angle: "we shipped the first end-to-end autonomous marketing agency for a newsletter"
+  platforms: ["x"]
+  suggested_hooks: ["behind-the-scenes", "bold-claim", "numbered-list"]
+  key_points:
+    - "8 agents, 1 human approval queue"
+    - "X auto-posts; LinkedIn paste manually"
+    - "Open source, MIT, self-hosted"
+
+research:
+  trends:
+    - "agentic dev tools (claude code, cursor) gaining traction"
+    - "newsletter marketing as a discipline reaching tipping point"
+  top_posts:
+    - platform: x
+      text: "shipped: 4 agents that handle my whole newsletter marketing pipeline. budget: $40/mo."
+      engagement: 1500
+    - platform: x
+      text: "the answer to 'should I automate this?' is almost always: only if you can measure it."
+      engagement: 900
+  audience_notes: "Active 7-9am ET. Reply rate higher on bold-claim opens."
+  open_questions:
+    - "are people ready to trust agents with brand voice?"

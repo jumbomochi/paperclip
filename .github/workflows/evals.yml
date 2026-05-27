@@ -1,0 +1,41 @@
+name: evals
+on:
+  pull_request:
+    paths:
+      - 'agents/**'
+      - 'policies/**'
+      - 'evals/**'
+
+jobs:
+  evals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      PROMPTFOO_REPLAY: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: pnpm install --frozen-lockfile
+      - name: Run Copywriter-X evals
+        run: pnpm evals --config evals/copywriter_x/promptfooconfig.yaml --output json > x.json
+      - name: Run Copywriter-LinkedIn evals
+        run: pnpm evals --config evals/copywriter_linkedin/promptfooconfig.yaml --output json > li.json
+      - name: Run Editor evals
+        run: pnpm evals --config evals/editor/promptfooconfig.yaml --output json > ed.json
+      - name: Enforce 95% pass rate
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+          for (const f of ['x.json', 'li.json', 'ed.json']) {
+            const j = JSON.parse(fs.readFileSync(f, 'utf8'));
+            const pass = j.results?.stats?.passes ?? 0;
+            const fail = j.results?.stats?.failures ?? 0;
+            const rate = pass / (pass + fail);
+            console.log(`${f}: ${pass}/${pass+fail} = ${(rate*100).toFixed(1)}%`);
+            if (rate < 0.95) { console.error(`${f}: pass_rate ${rate} < 0.95`); process.exit(1); }
+          }
+          EOF

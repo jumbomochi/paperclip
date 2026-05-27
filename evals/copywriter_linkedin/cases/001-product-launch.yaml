@@ -1,0 +1,25 @@
+brief:
+  audience: "indie founders and product builders"
+  angle: "shipping the first autonomous newsletter marketing agency"
+  platforms: ["linkedin"]
+  suggested_hooks: ["behind-the-scenes", "personal-story", "numbered-list"]
+  key_points:
+    - "8 agents, 1 human approval queue, ~15 min/day human time"
+    - "Postgres-backed event sourcing; UTM attribution loop closes the feedback"
+    - "Open source MIT, $40-180/mo at typical usage"
+
+research:
+  trends:
+    - "agentic dev tools entering mainstream professional discourse"
+    - "founders increasingly treating AI agents as team members, not features"
+  top_posts:
+    - platform: linkedin
+      text: "What I wish I'd known about pricing AI features for B2B: charge by outcome, not seat."
+      engagement: 2400
+    - platform: linkedin
+      text: "Three weeks running an AI-only marketing pipeline. The biggest surprise wasn't the writing — it was the editor."
+      engagement: 1800
+  audience_notes: "Highest engagement Tuesday-Thursday 8-10am ET. Stories with one specific number outperform abstract claims 3:1."
+  open_questions:
+    - "How much human discretion stays in the loop, and where?"
+    - "What does the agency catch that I would have missed?"

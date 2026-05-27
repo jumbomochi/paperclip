@@ -1,0 +1,31 @@
+description: Copywriter-LinkedIn golden set
+prompts:
+  - file://../../agents/copywriter_linkedin.yaml
+providers:
+  - id: anthropic:messages:claude-opus-4-7
+tests:
+  - vars:
+      brief: file://cases/{{case}}.yaml#brief
+      research: file://cases/{{case}}.yaml#research
+    assert:
+      - type: javascript
+        value: |
+          const out = JSON.parse(output);
+          if (!Array.isArray(out) || out.length !== 3) return { pass: false, reason: 'expected 3 drafts' };
+          for (const d of out) {
+            if (!d.hook_tag) return { pass: false, reason: 'missing hook_tag' };
+            if (d.body.length > 3000) return { pass: false, reason: 'too long' };
+            if (d.body.length < 600) return { pass: false, reason: 'too short for LinkedIn' };
+            const matches = d.body.match(/https?:\/\//g) ?? [];
+            if (matches.length !== 1) return { pass: false, reason: `expected exactly 1 link, got ${matches.length}` };
+          }
+          return { pass: true };
+      - type: llm-rubric
+        provider: anthropic:messages:claude-sonnet-4-6
+        value: file://../shared/judge.yaml#rubric
+
+scenarios:
+  - description: per-case
+    cases:
+      - case: '001-product-launch'
+      # TODO: 002-015. Author these.

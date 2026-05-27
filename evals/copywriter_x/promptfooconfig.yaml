@@ -1,0 +1,30 @@
+description: Copywriter-X golden set
+prompts:
+  - file://../../agents/copywriter_x.yaml
+providers:
+  - id: anthropic:messages:claude-opus-4-7
+tests:
+  - vars:
+      brief: file://cases/{{case}}.yaml#brief
+      research: file://cases/{{case}}.yaml#research
+    assert:
+      - type: javascript
+        value: |
+          const out = JSON.parse(output);
+          if (!Array.isArray(out) || out.length !== 3) return { pass: false, reason: 'expected 3 drafts' };
+          for (const d of out) {
+            if (!d.hook_tag) return { pass: false, reason: 'missing hook_tag' };
+            if (d.body.length > 280) return { pass: false, reason: 'too long' };
+            const matches = d.body.match(/https?:\/\//g) ?? [];
+            if (matches.length !== 1) return { pass: false, reason: `expected exactly 1 link, got ${matches.length}` };
+          }
+          return { pass: true };
+      - type: llm-rubric
+        provider: anthropic:messages:claude-sonnet-4-6
+        value: file://../shared/judge.yaml#rubric
+
+scenarios:
+  - description: per-case
+    cases:
+      - case: '001-launch-announce'
+      # TODO: 002-020. Author these by copying the 001 shape.
