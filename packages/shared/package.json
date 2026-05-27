@@ -1,0 +1,20 @@
+{
+  "name": "@paperclip/shared",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@paperclip/db": "workspace:*",
+    "drizzle-orm": "0.36.0",
+    "pino": "9.5.0"
+  },
+  "devDependencies": {
+    "typescript": "5.6.3",
+    "vitest": "2.1.3"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@paperclip/notifier",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "bin": { "notifier": "dist/index.js" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@paperclip/db": "workspace:*",
+    "@paperclip/shared": "workspace:*",
+    "drizzle-orm": "0.36.0",
+    "node-cron": "3.0.3",
+    "nodemailer": "6.9.16"
+  },
+  "devDependencies": {
+    "@types/node-cron": "3.0.11",
+    "@types/nodemailer": "6.4.16",
+    "typescript": "5.6.3",
+    "vitest": "2.1.3"
+  }
+}

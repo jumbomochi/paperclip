@@ -1,0 +1,24 @@
+{
+  "name": "@paperclip/linkedin-mcp",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "src/server.ts",
+  "bin": { "linkedin-mcp": "dist/server.js" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.0.4",
+    "@paperclip/db": "workspace:*",
+    "@paperclip/shared": "workspace:*",
+    "drizzle-orm": "0.36.0",
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
+    "msw": "2.4.9",
+    "typescript": "5.6.3",
+    "vitest": "2.1.3"
+  }
+}
