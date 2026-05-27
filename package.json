@@ -13,11 +13,10 @@
     "db:studio": "pnpm --filter @paperclip/db studio",
     "brief": "pnpm --filter @paperclip/stub-agents exec tsx ../../scripts/promote-brief.ts",
     "seed:x-creds": "pnpm --filter @paperclip/stub-agents exec tsx ../../scripts/seed-x-creds.ts",
-    "evals": "promptfoo eval"
+    "evals": "npx -y promptfoo@0.91.0 eval"
   },
   "devDependencies": {
     "typescript": "5.6.3",
-    "@types/node": "22.7.5",
-    "promptfoo": "0.91.0"
+    "@types/node": "22.7.5"
   }
 }
