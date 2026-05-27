@@ -1,0 +1,23 @@
+[sources.paperclip_logs]
+type = "file"
+include = ["/var/log/paperclip/*.log"]
+read_from = "end"
+
+[transforms.parse_pino]
+type = "remap"
+inputs = ["paperclip_logs"]
+source = '''
+parsed, err = parse_json(.message)
+if err == null {
+  . = merge(., parsed)
+}
+'''
+
+[sinks.betterstack]
+type = "http"
+inputs = ["parse_pino"]
+uri = "https://in.logs.betterstack.com/"
+encoding.codec = "json"
+auth.strategy = "bearer"
+auth.token = "${LOGS_TOKEN}"
+batch.max_events = 100
