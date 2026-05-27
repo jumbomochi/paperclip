@@ -128,6 +128,12 @@ export const oauthTokens = pgTable(
   }),
 );
 
+export const researchCache = pgTable('research_cache', {
+  cacheKey: text('cache_key').primaryKey(),
+  body: jsonb('body').notNull(),
+  fetchedAt: timestamp('fetched_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const xReadCache = pgTable(
   'x_read_cache',
   {

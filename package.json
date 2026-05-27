@@ -10,7 +10,9 @@
     "db:up": "docker compose -f infra/docker-compose.yml up -d postgres",
     "db:down": "docker compose -f infra/docker-compose.yml down",
     "db:migrate": "pnpm --filter @paperclip/db migrate",
-    "db:studio": "pnpm --filter @paperclip/db studio"
+    "db:studio": "pnpm --filter @paperclip/db studio",
+    "brief": "pnpm --filter @paperclip/stub-agents exec tsx ../../scripts/promote-brief.ts",
+    "seed:x-creds": "pnpm --filter @paperclip/stub-agents exec tsx ../../scripts/seed-x-creds.ts"
   },
   "devDependencies": {
     "typescript": "5.6.3",

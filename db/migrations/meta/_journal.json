@@ -15,6 +15,13 @@
       "when": 1779843731584,
       "tag": "0001_rainy_quicksilver",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779847658777,
+      "tag": "0002_faulty_morbius",
+      "breakpoints": true
     }
   ]
 }

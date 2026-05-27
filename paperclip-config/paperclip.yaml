@@ -1,0 +1,41 @@
+# Paperclip top-level config — illustrative. Adapt keys after consulting Paperclip's docs.
+org:
+  name: "Newsletter Marketing Agency"
+  mission: "Grow newsletter subscribers via X and LinkedIn audience-growth posts."
+
+database:
+  url: env:DATABASE_URL
+
+models:
+  smart:
+    provider: anthropic
+    model: claude-opus-4-7
+    api_key: env:ANTHROPIC_API_KEY
+  cheap:
+    provider: anthropic
+    model: claude-haiku-4-5-20251001
+    api_key: env:ANTHROPIC_API_KEY
+
+mcp_servers:
+  drafts:
+    command: node
+    args: ["../mcp/drafts-mcp/dist/server.js"]
+  x:
+    command: node
+    args: ["../mcp/x-mcp/dist/server.js"]
+    env:
+      TOKEN_ENC_KEY: env:TOKEN_ENC_KEY
+  linkedin:
+    command: node
+    args: ["../mcp/linkedin-mcp/dist/server.js"]
+    env:
+      TOKEN_ENC_KEY: env:TOKEN_ENC_KEY
+  research:
+    command: node
+    args: ["../mcp/research-mcp/dist/server.js"]
+  analytics:
+    command: node
+    args: ["../mcp/analytics-mcp/dist/server.js"]
+
+policies_dir: ../policies
+agents_dir: ../agents
