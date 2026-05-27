@@ -112,6 +112,31 @@ export const digests = pgTable('digests', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+export const oauthTokens = pgTable(
+  'oauth_tokens',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    account: text('account').notNull(),
+    platform: text('platform').notNull(),
+    encryptedPayload: text('encrypted_payload').notNull(),
+    nonce: text('nonce').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    accountPlatform: unique('oauth_tokens_account_platform').on(t.account, t.platform),
+  }),
+);
+
+export const xReadCache = pgTable(
+  'x_read_cache',
+  {
+    cacheKey: text('cache_key').primaryKey(),
+    body: jsonb('body').notNull(),
+    fetchedAt: timestamp('fetched_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+);
+
 export const metricsJobs = pgTable(
   'metrics_jobs',
   {
