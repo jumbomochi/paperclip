@@ -29,6 +29,12 @@ jobs:
         with: { node-version: 22, cache: 'pnpm' }
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @paperclip/db migrate
+      # Build first — @paperclip/db and /shared expose dist/index.js as main,
+      # so anyone importing them (vitest in shared/, all MCPs, workers) needs
+      # the build output to exist before tests run.
+      - run: pnpm --filter @paperclip/db build
+      - run: pnpm --filter @paperclip/shared build
+      - run: pnpm --filter './mcp/**' build
       - run: pnpm -r typecheck
       - run: pnpm -r test
       - run: pnpm --filter @paperclip/web build
