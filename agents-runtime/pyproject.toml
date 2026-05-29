@@ -39,6 +39,15 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/agents_runtime"]
 
+[tool.hatch.build.targets.wheel.sources]
+"src/agents_runtime" = "agents_runtime"
+
+[tool.hatch.build.targets.editable]
+packages = ["src/agents_runtime"]
+
+[tool.hatch.build.targets.editable.sources]
+"src/agents_runtime" = "agents_runtime"
+
 [tool.ruff]
 line-length = 100
 target-version = "py313"
