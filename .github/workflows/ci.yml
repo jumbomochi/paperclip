@@ -1,0 +1,76 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  ts:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: paperclip
+          POSTGRES_USER: paperclip
+          POSTGRES_PASSWORD: paperclip_dev
+        ports: ['5434:5432']
+        options: >-
+          --health-cmd "pg_isready -U paperclip -d paperclip"
+          --health-interval 3s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://paperclip:paperclip_dev@localhost:5434/paperclip
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: 'pnpm' }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @paperclip/db migrate
+      - run: pnpm -r typecheck
+      - run: pnpm -r test
+      - run: pnpm --filter @paperclip/web build
+
+  python:
+    runs-on: ubuntu-latest
+    needs: ts
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: paperclip
+          POSTGRES_USER: paperclip
+          POSTGRES_PASSWORD: paperclip_dev
+        ports: ['5434:5432']
+        options: >-
+          --health-cmd "pg_isready -U paperclip -d paperclip"
+          --health-interval 3s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://paperclip:paperclip_dev@localhost:5434/paperclip
+      SKIP_MCP_INTEGRATION: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.13' }
+      - uses: astral-sh/setup-uv@v3
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: 'pnpm' }
+      - name: Build TS deps for MCP subprocesses
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --filter @paperclip/db build
+          pnpm --filter @paperclip/shared build
+          pnpm --filter './mcp/**' build
+          pnpm --filter @paperclip/db migrate
+      - name: Python install + test
+        working-directory: agents-runtime
+        run: |
+          uv sync
+          uv run pytest -v
