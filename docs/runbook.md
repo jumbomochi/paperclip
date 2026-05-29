@@ -7,17 +7,17 @@
 4. Postgres unhealthy? Check disk: `df -h`. If full, see backup retention.
 
 ## "Cost watchdog warned"
-1. Check Paperclip dashboard (port 8080) for which agent is burning.
-2. Read recent ticket trail. Was there a stuck loop?
-3. Tighten the relevant agent's `budget_usd_per_month` in `agents/*.yaml`. Redeploy.
-4. If acute, pause Paperclip: `docker compose stop paperclip`. Investigate.
+1. Check BetterStack: filter `name:strategist OR name:researcher OR name:copywriter OR name:editor` for token-usage spikes.
+2. `agents-runtime` logs per-node `input_tokens` / `cache_read_tokens` via structlog.
+3. Tighten the relevant agent's prompt in `agents/*.yaml` (shorter context = fewer tokens). Restart the runner.
+4. If acute, pause the runner: `docker compose stop agent-runner`. Investigate.
 
 ## "I need to restore from backup"
 ```sh
 cd /opt/paperclip
 docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml exec backup /restore.sh
 ```
-Restart workers: `docker compose ... restart scheduler metrics-collector attribution-mcp notifier paperclip`.
+Restart workers: `docker compose ... restart scheduler metrics-collector attribution-mcp notifier agent-runner`.
 
 ## "X account suspended"
 1. Do not auto-recover — investigate first.

@@ -16,5 +16,22 @@ services:
       timeout: 3s
       retries: 10
 
+  agent-runner:
+    build:
+      context: ..
+      dockerfile: agents-runtime/Dockerfile
+    profiles: ["full"]
+    depends_on:
+      postgres: { condition: service_healthy }
+    env_file: ../.env
+    environment:
+      DATABASE_URL: postgres://paperclip:paperclip_dev@postgres:5432/paperclip
+      LOG_FILE_DIR: /var/log/paperclip
+    volumes:
+      - ../agents:/app/agents:ro
+      - ../policies:/app/policies:ro
+      - /var/log/paperclip:/var/log/paperclip
+    command: ["uv", "run", "paperclip-agents", "serve"]
+
 volumes:
   paperclip_pgdata:

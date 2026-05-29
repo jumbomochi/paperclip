@@ -1,6 +1,8 @@
 # Paperclip — Zero-Human Marketing Agency
 
-An open-source AI marketing agency built on [Paperclip](https://paperclip.ing/). Drafts → editor → human approval queue → automatic X posting + manual LinkedIn paste → UTM-attributed signups → analytics feedback loop.
+An open-source AI marketing agency. Drafts → editor → human approval queue → automatic X posting + manual LinkedIn paste → UTM-attributed signups → analytics feedback loop.
+
+Agents orchestrated by a Python LangGraph DAG; everything else (web UI, MCP servers, workers, schema) is TypeScript.
 
 ## Local setup
 
@@ -10,11 +12,45 @@ An open-source AI marketing agency built on [Paperclip](https://paperclip.ing/).
    ```bash
    node -e 'console.log("base64:"+require("crypto").randomBytes(32).toString("base64"))'
    ```
-   Paste into `.env` as `TOKEN_ENC_KEY=...`.
+   Paste into `.env` as `TOKEN_ENC_KEY=...`. Also add `ANTHROPIC_API_KEY=sk-ant-…`.
 4. Get X Basic-tier API keys (OAuth 1.0a user context). Export `X_API_KEY`, `X_API_SECRET`, `X_ACCESS_TOKEN`, `X_ACCESS_SECRET`. Then `pnpm seed:x-creds`.
-5. `pnpm --filter @paperclip/stub-agents stub:run-week` — exercises the full pipeline without LLMs (Plan 2/3 verification).
-6. `pnpm --filter @paperclip/web dev` — http://localhost:3000/queue
+5. Build the TS bits the Python agent runtime needs:
+   ```bash
+   pnpm --filter @paperclip/db build
+   pnpm --filter @paperclip/shared build
+   pnpm --filter './mcp/**' build
+   ```
+6. Start the dashboard: `pnpm --filter @paperclip/web dev` — http://localhost:3000/queue
 7. Approve in the UI — scheduler posts X drafts on its 15-min tick. LinkedIn drafts surface in awaiting_paste; copy + paste, then paste URL back.
+
+## Agent runtime (Python LangGraph)
+
+```bash
+cd agents-runtime && uv sync
+```
+
+Run the full DAG end-to-end against a manual theme:
+
+```bash
+uv run paperclip-agents run-week "Theme: <your theme here>"
+```
+
+Or run the long-running dispatcher (polls Postgres for `briefed` rows):
+
+```bash
+uv run paperclip-agents serve
+```
+
+Daily / weekly Analyst digests:
+
+```bash
+uv run paperclip-agents digest --kind daily
+uv run paperclip-agents digest --kind weekly
+```
+
+Agents are defined in `agents/*.yaml` (loaded at runtime — edit and re-run, no restart). Policies in `policies/*.md` are inlined via `{{policy:NAME}}` markers.
+
+The Chief-of-Staff role is fulfilled by `run-week` invocations (human or weekly cron) — there's no COS LangGraph node.
 
 ## Newsletter (Beehiiv) setup
 
@@ -24,21 +60,14 @@ An open-source AI marketing agency built on [Paperclip](https://paperclip.ing/).
 
 If you use a different newsletter platform: implement the `NewsletterClient` interface (`mcp/attribution-mcp/src/newsletterClients/types.ts`).
 
-## Paperclip setup
-
-After [Paperclip](https://paperclip.ing/) is installed (vendor it as a submodule or follow upstream docs):
-
-1. Point Paperclip at `paperclip-config/paperclip.yaml` (adapt keys to Paperclip's actual schema).
-2. Mount `agents/`, `policies/`, and built `mcp/*/dist/` directories.
-3. `pnpm brief "<theme>"` to kick off a manual run.
-
 ## Project structure
 
 - `apps/web/` — Next.js dashboard (approval queue, post detail, leaderboards, digests).
 - `db/` — Drizzle schema + migrations; one Postgres for everything.
 - `mcp/` — One MCP server per concern (drafts, x, linkedin, research, attribution, analytics).
-- `workers/` — Background processes (scheduler, metrics-collector, notifier, cost-watchdog).
-- `agents/`, `policies/` — Paperclip-loaded YAML/markdown.
+- `workers/` — TS background processes (scheduler, metrics-collector, notifier, cost-watchdog).
+- `agents-runtime/` — Python LangGraph agent layer (uv + Python 3.13).
+- `agents/`, `policies/` — Loaded at runtime by `agents-runtime`.
 - `evals/` — promptfoo golden-set evals for agents (CI-gated).
 - `infra/` — docker-compose, Caddyfile, vector config, backup script.
 - `docs/superpowers/` — design specs + implementation plans.
@@ -46,12 +75,13 @@ After [Paperclip](https://paperclip.ing/) is installed (vendor it as a submodule
 ## Tests
 
 ```bash
-pnpm test       # all package tests
-pnpm typecheck  # all package typecheck
+pnpm test       # all TS tests
+pnpm typecheck  # all TS typecheck
+cd agents-runtime && uv run pytest -v
 ```
 
 ## See also
 
 - [Design spec](docs/superpowers/specs/2026-05-26-zero-human-marketing-agency-design.md)
-- Implementation plans 1-6 under `docs/superpowers/plans/`
+- Implementation plans 1-7 under `docs/superpowers/plans/`
 - [Runbook](docs/runbook.md) — incident playbook
