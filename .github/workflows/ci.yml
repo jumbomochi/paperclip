@@ -36,7 +36,10 @@ jobs:
       - run: pnpm --filter @paperclip/shared build
       - run: pnpm --filter './mcp/**' build
       - run: pnpm -r typecheck
-      - run: pnpm -r test
+      # --workspace-concurrency=1: multiple packages share the same Postgres
+      # and clean `drafts` in beforeEach. Running them in parallel causes one
+      # package to wipe another's FK targets mid-test.
+      - run: pnpm -r --workspace-concurrency=1 test
       - run: pnpm --filter @paperclip/web build
 
   python:
