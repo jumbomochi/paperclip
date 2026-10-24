@@ -10,7 +10,7 @@
     "test": "echo '(web e2e: run \"pnpm exec playwright test\" with a running dev server)'"
   },
   "dependencies": {
-    "next": "15.5.23",
+    "next": "15.5.28",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "@paperclip/db": "workspace:*",
